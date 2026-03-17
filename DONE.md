@@ -59,7 +59,7 @@ export default defineConfig({
     schema: './src/schema.ts',
     out: './migrations',
     dialect: 'sqlite',
-    driver: 'd1-http',
+    /*driver: 'd1-http',*/
     dbCredentials: {
         url: '.wrangler/state/v3/d1/miniflare-D1DatabaseObject/local.sqlite',
         /*accountId: process.env.CLOUDFLARE_ACCOUNT_ID!,
@@ -67,8 +67,56 @@ export default defineConfig({
         token: process.env.CLOUDFLARE_D1_TOKEN!,*/
     },
 });
+
+```
+
+## Migration
+
+```bash
+$ bunx drizzle-kit generate
+# No config path provided, using default 'drizzle.config.ts'
+# Reading config file '/home/itsukikigoshi/Developpement/hono-todo-app/drizzle.config.ts'
+# 1 tables
+# todos 5 columns 0 indexes 0 fks
+
+# [✓] Your SQL migration file ➜ migrations/0000_sudden_logan.sql 
+```
+
+```jsonc : wrangler.jsonc
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "hono-todo-app",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-03-17",
+	"d1_databases": [
+		{
+			"binding": "hono_todo_db",
+			"database_name": "hono-todo-db",
+			"database_id": "38b7f259-5c0b-41e0-9397-f3a2b5b08067",
+			"migrations_dir": "./migrations" // この行を追記
+		}
+	]
+}
 ```
 
 ```bash
-$ bunx drizzle-kit generate --dialect sqlite --schema src/schema.ts
+$ bunx wrangler d1 migrations apply hono-todo-db --local
 ```
+
+## 寄り道: drizzle-kit studio
+UIでデータベースが見れるツール. まだβ.
+
+
+依存関係で以下を追加.
+```bash
+$ bun add -D better-sqlite3
+$ bun add -D @types/better-sqlite3
+```
+
+```bash
+$ bunx drizzle-kit studio
+```
+
+- Supabaseをセルフホストしたときもこのstudioみたいな操作感なのかな
+- ちゃんとtodosテーブルがstudioで見れた!!
+

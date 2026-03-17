@@ -7,7 +7,8 @@
 		{
 			"binding": "hono_todo_db",
 			"database_name": "hono-todo-db",
-			"database_id": "38b7f259-5c0b-41e0-9397-f3a2b5b08067"
+			"database_id": "38b7f259-5c0b-41e0-9397-f3a2b5b08067",
+			"migrations_dir": "./migrations" // この行を追記
 		}
 	]
 }
