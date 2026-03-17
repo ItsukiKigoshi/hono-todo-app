@@ -1,14 +1,14 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "hono-todo-app",
-	"main": "src/index.tsx", //.ts --> .tsx
-	"compatibility_date": "2026-03-17",
-	"d1_databases": [
-		{
-			"binding": "hono_todo_db",
-			"database_name": "hono-todo-db",
-			"database_id": "38b7f259-5c0b-41e0-9397-f3a2b5b08067",
-			"migrations_dir": "./migrations" // この行を追記
-		}
-	]
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hono-todo-app",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-03-17",
+  "d1_databases": [
+    {
+      "binding": "hono_todo_db",
+      "database_name": "hono-todo-db",
+      "database_id": "38b7f259-5c0b-41e0-9397-f3a2b5b08067",
+      "migrations_dir": "./migrations"
+    }
+  ]
 }

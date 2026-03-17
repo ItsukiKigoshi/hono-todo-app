@@ -1,4 +1,5 @@
 # やったことメモ
+
 - 基本は[このQiita記事](https://qiita.com/kmkkiii/items/2b22fa53a90bf98158c0)をBunに読み替えて実行
 
 ## Installation
@@ -26,30 +27,33 @@ $ bunx wrangler loginin
 wragler.tomlはwragler.jsoncになって書き変えの必要無し
 
 Cf. https://bun.com/docs/guides/ecosystem/drizzle
+
 ```bash
 $ bun add drizzle-orm
 $ bun add -D drizzle-kit
 ```
+
 ## ファイル設定
 
 ```ts : src/schema.ts
-import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
+import {sqliteTable, integer, text} from "drizzle-orm/sqlite-core";
 
 export const todos = sqliteTable("todos", {
-    id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    id: integer("id", {mode: "number"}).primaryKey({autoIncrement: true}),
     title: text("title").notNull(),
-    status: text("status", { enum: ["todo", "doing", "done"] }).default("todo"),
-    createdAt: integer("created_at", { mode: "timestamp" })
+    status: text("status", {enum: ["todo", "doing", "done"]}).default("todo"),
+    createdAt: integer("created_at", {mode: "timestamp"})
         .$defaultFn(() => new Date()),
-    updatedAt: integer("updated_at", { mode: "timestamp" })
+    updatedAt: integer("updated_at", {mode: "timestamp"})
         .$defaultFn(() => new Date()),
 });
 
 ```
 
 - https://orm.drizzle.team/docs/guides/d1-http-with-drizzle-kit
+
 ```ts : drizzle.config.ts
-import { defineConfig } from 'drizzle-kit';
+import {defineConfig} from 'drizzle-kit';
 
 export default defineConfig({
     schema: './src/schema.ts',
@@ -82,7 +86,7 @@ $ bunx drizzle-kit generate
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "hono-todo-app",
-	"main": "src/index.tsx", //.ts --> .tsx
+	"main": "src/index.ts",
 	"compatibility_date": "2026-03-17",
 	"d1_databases": [
 		{
@@ -100,10 +104,11 @@ $ bunx wrangler d1 migrations apply hono-todo-db --local
 ```
 
 ## 寄り道: drizzle-kit studio
+
 UIでデータベースが見れるツール. まだβ.
 
-
 依存関係で以下を追加.
+
 ```bash
 $ bun add -D better-sqlite3
 $ bun add -D @types/better-sqlite3
@@ -117,6 +122,7 @@ $ bunx drizzle-kit studio
 - ちゃんとtodosテーブルがstudioで見れた!!
 
 ## HonoからCRUD操作
+
 ```bash
 $ bun add -D @cloudflare/workers-types
 ```
@@ -142,13 +148,13 @@ $ bun add -D @cloudflare/workers-types
 ```
 
 ```ts : src/index.ts
-import { Hono } from "hono";
-import { drizzle } from "drizzle-orm/d1";
-import { todos } from "./schema";
-import { eq } from "drizzle-orm";
+import {Hono} from "hono";
+import {drizzle} from "drizzle-orm/d1";
+import {todos} from "./schema";
+import {eq} from "drizzle-orm";
 
 type Bindings = {
-  hono_todo_db: D1Database; // "hono_todo_db"の部分は, wrangler.jsoncのd1_databases/bindingと一致させる!
+    hono_todo_db: D1Database; // "hono_todo_db"の部分は, wrangler.jsoncのd1_databases/bindingと一致させる!
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
@@ -158,56 +164,56 @@ app.get("/", (c) => c.text("Hello Hono!"));
  * todos
  */
 app.get("/todos", async (c) => {
-  const db = drizzle(c.env.hono_todo_db);
-  const result = await db.select().from(todos).all();
-  return c.json(result);
+    const db = drizzle(c.env.hono_todo_db);
+    const result = await db.select().from(todos).all();
+    return c.json(result);
 });
 
 /**
  * create todo
  */
 app.post("/todos", async (c) => {
-  const params = await c.req.json<typeof todos.$inferSelect>();
-  const db = drizzle(c.env.hono_todo_db);
-  const result = await db
-      .insert(todos)
-      .values({ title: params.title })
-      .execute();
-  return c.json(result);
+    const params = await c.req.json<typeof todos.$inferSelect>();
+    const db = drizzle(c.env.hono_todo_db);
+    const result = await db
+        .insert(todos)
+        .values({title: params.title})
+        .execute();
+    return c.json(result);
 });
 
 /**
  * update todo
  */
 app.put("/todos/:id", async (c) => {
-  const id = parseInt(c.req.param("id"));
+    const id = parseInt(c.req.param("id"));
 
-  if (isNaN(id)) {
-    return c.json({ error: "invalid ID" }, 400);
-  }
+    if (isNaN(id)) {
+        return c.json({error: "invalid ID"}, 400);
+    }
 
-  const params = await c.req.json<typeof todos.$inferSelect>();
-  const db = drizzle(c.env.hono_todo_db);
-  const result = await db
-      .update(todos)
-      .set({ title: params.title, status: params.status })
-      .where(eq(todos.id, id));
-  return c.json(result);
+    const params = await c.req.json<typeof todos.$inferSelect>();
+    const db = drizzle(c.env.hono_todo_db);
+    const result = await db
+        .update(todos)
+        .set({title: params.title, status: params.status})
+        .where(eq(todos.id, id));
+    return c.json(result);
 });
 
 /**
  * delete todo
  */
 app.delete("/todos/:id", async (c) => {
-  const id = parseInt(c.req.param("id"));
+    const id = parseInt(c.req.param("id"));
 
-  if (isNaN(id)) {
-    return c.json({ error: "invalid ID" }, 400);
-  }
+    if (isNaN(id)) {
+        return c.json({error: "invalid ID"}, 400);
+    }
 
-  const db = drizzle(c.env.hono_todo_db);
-  const result = await db.delete(todos).where(eq(todos.id, id));
-  return c.json(result);
+    const db = drizzle(c.env.hono_todo_db);
+    const result = await db.delete(todos).where(eq(todos.id, id));
+    return c.json(result);
 });
 
 export default app;
@@ -217,3 +223,4 @@ export default app;
 ```bash
 $ bun dev
 ```
+
