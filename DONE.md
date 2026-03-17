@@ -82,7 +82,7 @@ $ bunx drizzle-kit generate
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "hono-todo-app",
-	"main": "src/index.ts",
+	"main": "src/index.tsx", //.ts --> .tsx
 	"compatibility_date": "2026-03-17",
 	"d1_databases": [
 		{
