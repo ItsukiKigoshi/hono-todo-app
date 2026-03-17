@@ -1,7 +1,7 @@
-# Bun + Hono + Vite + Drizzle + Cloudflare D1
+# Bun + Hono + Drizzle + Cloudflare D1
 
 - Cloudflare D1 (SQLite)以外のさくら，AWS, GCP (PostgreSQL)でも使えるようにORMを挟む.
-- うーんNext.jsでやった方が結局楽なんかな...
+- うーんRemix/Next.jsでやった方が結局楽なんかな...
 
 ## Ref:
 - [HonoとCloudflare D1とDrizzle ORMを使ってWeb APIを作る #cloudflare - Qiita](https://qiita.com/kmkkiii/items/2b22fa53a90bf98158c0)
