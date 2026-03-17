@@ -1,5 +1,6 @@
-# Bun T Hono + JSX + (Drizzle +) Cloudflare D1
+# Bun + Hono + JSX + (Drizzle +) Cloudflare D1
 
+- Cloudflare D1 (SQLite)以外のさくら，AWS, GCP (PostgreSQL)でも使えるようにORMを挟む.
 ## Ref:
 - https://qiita.com/kmkkiii/items/2b22fa53a90bf98158c0
 
