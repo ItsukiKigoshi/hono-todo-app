@@ -18,7 +18,7 @@ $ bun create hono@latest hono-todo-app
 ```
 
 ```bash
-$ bunx wrangler loginin
+$ bunx wrangler login
 # ✔ Would you like Wrangler to add it on your behalf? … yes
 # ✔ What binding name would you like to use? … hono_todo_db
 # ✔ For local dev, do you want to connect to the remote resource instead of a local resource? … no
